@@ -21,6 +21,8 @@ from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 
+import joblib #para exportar el modelo
+
 
 # In[104]:
 
@@ -147,6 +149,7 @@ gd_sr = GridSearchCV(estimator=model,
                      cv=3,
                      n_jobs=-1)
 gd_sr.fit(X_train, y_train)
+joblib.dump(gd_sr, 'modelo.pkl') #Guardo el modelo
 best_parameters = gd_sr.best_params_
 print(best_parameters)
 best_result = gd_sr.best_score_
