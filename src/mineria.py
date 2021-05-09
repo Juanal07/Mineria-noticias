@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[103]:
-
-
 # Imports
 import os
 import pandas as pd
@@ -23,17 +17,9 @@ from sklearn.metrics import accuracy_score, classification_report, confusion_mat
 
 import joblib #para exportar el modelo
 
-
-# In[104]:
-
-
 # Creamos el array de textos y el array de categorias
 x=[]
 y=[]
-
-
-# In[105]:
-
 
 # Cargamos el dataset
 for cat in os.listdir('../newspaper-articles-main/'):
@@ -42,22 +28,9 @@ for cat in os.listdir('../newspaper-articles-main/'):
             x.append(f.read())
             y.append(cat)
 
-
-# In[106]:
-
-
 # Mostramos el array de textos
-x
-
-
-# In[107]:
-
-
-y
-
-
-# In[108]:
-
+print(x)
+print(y)
 
 # Pasamos el array de categorias a valores numericos
 y_num=[]
@@ -71,25 +44,13 @@ for i in y:
         y_num.append(1)
         value_nodes+=1
 
-
-# In[109]:
-
-
 # Mostramos el array de categorias por numero
-y_num
-
-
-# In[110]:
-
+print(y_num)
 
 # Mostramos numero de textos por categoria
 names = ['Despoblacion', 'No despoblacion']
 values = [value_des, value_nodes]
 plt.bar(names, values)
-
-
-# In[111]:
-
 
 # Proceso de limpieza del array de textos
 spanish_stemmer = SnowballStemmer('spanish')
@@ -104,37 +65,20 @@ for texto in x:
     stemmed = ' '.join(tokenized)
     corpus.append(stemmed)
 
-
-# In[112]:
-
-
 # Cargamos el texto de stop words en castellano, lo mostramos
 with open('../stopword.txt', 'r') as file:
     my_stopwords=[file.read().replace('\n', ',')]
 print(my_stopwords)
-
-
-# In[113]:
-
 
 # Creamos Matrix TF-IDF aplicando nuestras stop words y la mostramos
 cv_tfidf = TfidfVectorizer(analyzer='word', stop_words = my_stopwords)
 X_tfidf = cv_tfidf.fit_transform(corpus).toarray()
 pd.DataFrame(X_tfidf, columns=cv_tfidf.get_feature_names())
 
-
-# In[114]:
-
-
-# Dividimos nuestros datos en train/test al 80/20
-# y mostramos que categorias hay en cada grupo
+# Dividimos nuestros datos en train/test al 80/20 y mostramos que categorias hay en cada grupo
 X_train, X_test, y_train, y_test = train_test_split(X_tfidf, y_num, test_size=0.2, random_state=0)
 print(y_train)
 print(y_test)
-
-
-# In[115]:
-
 
 # Para los modelos que queremos probar: entrenamos, testeamos, mostramos la accuracy,
 # la classification reoprt y la confusion matrix
@@ -160,22 +104,12 @@ print("Accuracy test: " + str(acc) + '\n')
 print(classification_report(y_test, prediction))
 print(confusion_matrix(y_test, prediction))
 
-
-# In[116]:
-
-
 # Mostramos la confusion matrix con mapa de calor
-
-
 conf_mat = confusion_matrix(y_test, prediction)
 sns.heatmap(conf_mat, annot=True, fmt='d',
             xticklabels=['despoblacion','no despoblacion'], yticklabels=['despoblacion','no despoblacion'])
 plt.ylabel('Actual')
 plt.xlabel('Predicted')
-
-
-# In[117]:
-
 
 # Clasificamos textos al momento
 texts = ["Los pueblos de la españa vaciada",
@@ -203,4 +137,3 @@ for text, predicted in zip(texts, predictions):
   print('"{}"'.format(text))
   print("  - Predicted as: '{}'".format(predicted))
   print("")
-
